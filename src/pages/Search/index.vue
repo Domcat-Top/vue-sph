@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>{{ $route.params.keyWord }}</h1>
-    <h1>{{ $route.params.test }}</h1>
+    <TypeNav/>
   </div>
 </template>
 

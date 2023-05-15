@@ -2,62 +2,64 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
-      <nav class="nav">
-        <a href="###">服装城</a>
-        <a href="###">美妆馆</a>
-        <a href="###">尚品汇超市</a>
-        <a href="###">全球购</a>
-        <a href="###">闪购</a>
-        <a href="###">团购</a>
-        <a href="###">有趣</a>
-        <a href="###">秒杀</a>
-      </nav>
-      <div class="sort">
-        <div class="all-sort-list2" @click="goSearch()">
-          <div
-            class="item"
-            v-for="(c1, index) in categoryList"
-            :key="c1.categoryId"
-            :class="{ cur: currentIndex == index }"
-          >
-            <h3 @mouseenter="changeIndex(index)" @mouseleave="leaveIndex()">
-              <a
-                :data-categoryName="c1.categoryName"
-                :data-category1id="c1.categoryId"
-                >{{ c1.categoryName }}</a
-              >
-            </h3>
+      <div @mouseleave="leaveIndex()" @mouseenter="enterShow()">
+        <h2 class="all">全部商品分类</h2>
+        <nav class="nav">
+          <a href="###">服装城</a>
+          <a href="###">美妆馆</a>
+          <a href="###">尚品汇超市</a>
+          <a href="###">全球购</a>
+          <a href="###">闪购</a>
+          <a href="###">团购</a>
+          <a href="###">有趣</a>
+          <a href="###">秒杀</a>
+        </nav>
+        <div class="sort" v-show="show">
+          <div class="all-sort-list2" @click="goSearch()">
             <div
-              class="item-list clearfix"
-              :style="{ display: currentIndex == index ? 'block' : 'none' }"
+              class="item"
+              v-for="(c1, index) in categoryList"
+              :key="c1.categoryId"
+              :class="{ cur: currentIndex == index }"
             >
+              <h3 @mouseenter="changeIndex(index)">
+                <a
+                  :data-categoryName="c1.categoryName"
+                  :data-category1id="c1.categoryId"
+                  >{{ c1.categoryName }}</a
+                >
+              </h3>
               <div
-                class="subitem"
-                v-for="(c2, index) in c1.categoryChild"
-                :key="c2.categoryId"
+                class="item-list clearfix"
+                :style="{ display: currentIndex == index ? 'block' : 'none' }"
               >
-                <dl class="fore">
-                  <dt>
-                    <a
-                      :data-categoryName="c2.categoryName"
-                      :data-category2id="c2.categoryId"
-                      >{{ c2.categoryName }}</a
-                    >
-                  </dt>
-                  <dd>
-                    <em
-                      v-for="(c3, index) in c2.categoryChild"
-                      :key="c3.categoryId"
-                    >
+                <div
+                  class="subitem"
+                  v-for="(c2, index) in c1.categoryChild"
+                  :key="c2.categoryId"
+                >
+                  <dl class="fore">
+                    <dt>
                       <a
-                        :data-categoryName="c3.categoryName"
-                        :data-category3Id="c3.categoryId"
-                        >{{ c3.categoryName }}</a
+                        :data-categoryName="c2.categoryName"
+                        :data-category2id="c2.categoryId"
+                        >{{ c2.categoryName }}</a
                       >
-                    </em>
-                  </dd>
-                </dl>
+                    </dt>
+                    <dd>
+                      <em
+                        v-for="(c3, index) in c2.categoryChild"
+                        :key="c3.categoryId"
+                      >
+                        <a
+                          :data-categoryName="c3.categoryName"
+                          :data-category3Id="c3.categoryId"
+                          >{{ c3.categoryName }}</a
+                        >
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
@@ -76,6 +78,7 @@ export default {
   data() {
     return {
       currentIndex: -1,
+      show: true,
     };
   },
   methods: {
@@ -89,6 +92,12 @@ export default {
     }, 50),
     leaveIndex() {
       this.currentIndex = -1;
+      if(this.$router.path != "/home") {
+        this.show = false;
+      }
+    },
+    enterShow() {
+      this.show = true;
     },
     // 三级联动点击后，跳转到查询组件
     goSearch(event) {
@@ -96,7 +105,7 @@ export default {
       let { categoryname, category1id, category2id, category3id } =
         event.target.dataset;
       if (categoryname) {
-        let location = { name: "search" };
+        let location = { name: "Search" };
         let query = { categoryName: categoryname };
         if (category1id) {
           query.category1id = category1id;
@@ -113,6 +122,9 @@ export default {
   },
   mounted() {
     this.$store.dispatch("categoryList");
+    if (this.$router.path != "/home") {
+      this.show = false;
+    }
   },
   computed: {
     ...mapState({
@@ -235,11 +247,11 @@ export default {
             }
           }
 
-          // &:hover {
-          //   .item-list {
-          //     display: block;
+          //   &:hover {
+          //     .item-list {
+          //       display: block;
+          //     }
           //   }
-          // }
         }
         // .item:hover {
         //   background: skyblue;
