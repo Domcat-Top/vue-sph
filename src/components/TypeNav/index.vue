@@ -22,9 +22,16 @@
             :class="{ cur: currentIndex == index }"
           >
             <h3 @mouseenter="changeIndex(index)" @mouseleave="leaveIndex()">
-              <a :data-categoryName="c1.categoryName">{{ c1.categoryName }}</a>
+              <a
+                :data-categoryName="c1.categoryName"
+                :data-category1id="c1.categoryId"
+                >{{ c1.categoryName }}</a
+              >
             </h3>
-            <div class="item-list clearfix" :style="{display: currentIndex == index ? 'block' : 'none'}">
+            <div
+              class="item-list clearfix"
+              :style="{ display: currentIndex == index ? 'block' : 'none' }"
+            >
               <div
                 class="subitem"
                 v-for="(c2, index) in c1.categoryChild"
@@ -32,14 +39,22 @@
               >
                 <dl class="fore">
                   <dt>
-                    <a :data-categoryName="c2.categoryName">{{ c2.categoryName }}</a>
+                    <a
+                      :data-categoryName="c2.categoryName"
+                      :data-category2id="c2.categoryId"
+                      >{{ c2.categoryName }}</a
+                    >
                   </dt>
                   <dd>
                     <em
                       v-for="(c3, index) in c2.categoryChild"
                       :key="c3.categoryId"
                     >
-                      <a :data-categoryName="c3.categoryName">{{ c3.categoryName }}</a>
+                      <a
+                        :data-categoryName="c3.categoryName"
+                        :data-category3Id="c3.categoryId"
+                        >{{ c3.categoryName }}</a
+                      >
                     </em>
                   </dd>
                 </dl>
@@ -55,7 +70,7 @@
 <script>
 import { mapState } from "vuex";
 // 按需引入，只引入当前需要的函数
-import throttle from 'lodash/throttle';
+import throttle from "lodash/throttle";
 export default {
   name: "TypeNav",
   data() {
@@ -69,20 +84,32 @@ export default {
     //   this.currentIndex = index;
     // },
     // 移动太快的话，则过50ms显示一次，防止出现卡顿
-    changeIndex: throttle(function(index) {
+    changeIndex: throttle(function (index) {
       this.currentIndex = index;
-    }, 50), 
+    }, 50),
     leaveIndex() {
       this.currentIndex = -1;
     },
     // 三级联动点击后，跳转到查询组件
     goSearch(event) {
       // 对象的解构，也就是直接拿到对象中的这些属性
-      let {categoryname} = event.target.dataset;
-      if(categoryname) {
-        alert("这里是Tom的测试！");
+      let { categoryname, category1id, category2id, category3id } =
+        event.target.dataset;
+      if (categoryname) {
+        let location = { name: "search" };
+        let query = { categoryName: categoryname };
+        if (category1id) {
+          query.category1id = category1id;
+        } else if (category2id) {
+          query.category2id = category2id;
+        } else {
+          query.catrgory3id = category3id;
+        }
+        location.query = query;
+        // 路由携带参数跳转
+        this.$router.push(location);
       }
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("categoryList");
