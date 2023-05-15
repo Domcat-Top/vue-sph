@@ -92,7 +92,24 @@
 </template>
 
 <script>
-export default {};
+import store from '@/store';
+import {mapState} from 'vuex';
+export default {
+  data() {
+    return {};
+  },
+  // 和state的数据进行绑定
+  computed: {
+    ...mapState({
+      bannerList: state => state.home.bannerList
+    })
+  },
+  mounted() {
+    // 给banner放数据
+    let result = this.$store.dispatch("getBannerList");
+
+  },
+};
 </script>
 
 <style scoped lang="less">
