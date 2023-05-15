@@ -16,6 +16,7 @@ Vue.component(TypeNav.name, TypeNav);
 // 引入仓库
 import store from '@/store'
 
+import '@/mock/mockServer';
 
 new Vue({
   render: h => h(App),
