@@ -93,8 +93,9 @@ export default {
       }
       console.log(this.agree);
     },
+    // 这里竟然也需要异步等待，这是我没想到的
     // 用户注册
-    userRegister() {
+     async userRegister() {
       // 判断两次密码是否相同
       if(this.passWord != this.passWordAgain) {
         alert("两次输入密码不同！");
@@ -107,7 +108,12 @@ export default {
         password: this.passWord,
         password1: this.passWordAgain,
       }
-      this.$store.dispatch("userRegister", data);
+      try {
+        await this.$store.dispatch("userRegister", data);
+        this.$router.push("/login");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   }
 };
