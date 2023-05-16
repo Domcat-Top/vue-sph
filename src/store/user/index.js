@@ -1,18 +1,22 @@
 
-import { reqGetCode, reqUserRegister, reqUserLogin} from "@/api";
+import { reqGetCode, reqUserRegister, reqUserLogin, reqUserInfo} from "@/api";
 
 // 登录与注册的模块
 const state = {
     code: "",
     token: "",
+    userInfo: {},
 };
 
 const mutations = {
     GETCODE(state, code) {
         state.code = code;
     },
-    USERLOGIN(token) {
+    USERLOGIN(state, token) {
         state.token  = token;
+    },
+    GETUSERINFO(state, userInfo){
+        state.userInfo = userInfo;
     }
 };
 
@@ -42,6 +46,16 @@ const actions = {
         if(result.code == 200 ) {
             commit("USERLOGIN", result.data.token);
             return "ok";
+        } else {
+            return Promise.reject(new Error("failure"));
+        }
+    },
+    // 获取用户信息
+    async getUserInfo(commit) {
+        let result = await reqUserInfo();
+        if(result.code == 200) {
+            commit("GETUSERINFO", result.data);
+            return "OK";
         } else {
             return Promise.reject(new Error("failure"));
         }

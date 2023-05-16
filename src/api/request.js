@@ -19,7 +19,13 @@ const requests = axios.create({
 // 请求拦截器：在发请求之前，请求拦截器可以检测到;
 // 在请求发出去之前做一些事情
 requests.interceptors.request.use((config) => {
+    // 登陆以后，服务器返回一个token，放入到store.state
+    // 之后每次请求跳转之前，检查是否有token，进行相关的操作
     // config：配置对象，对象里面有一个属性很重要，headers请求头
+    // 需要携带token给服务器
+    if(store.state.user.token) {
+        config.headers.token = store.state.user.token;
+    }
     // 进度条开始动
     nprogress.start();
     return config;
